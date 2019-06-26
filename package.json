@@ -1,0 +1,13 @@
+{
+	"name": "University of Michigan Minecraft Server Discord Bot",
+	"version": "2.1.0",
+	"description": "Check the status of the University of Michigan's Minecraft servers",
+	"main": "bot.js",
+	"author": "Amal Bansode",
+	"url":"http://amalbansode.com",
+	"license":"GPL-3.0-or-later",
+	"dependencies": {
+		"discord.js": "^11.5.1",
+		"minestat.js": "ldilley/minestat/Javascript"
+	}
+}
