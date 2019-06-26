@@ -55,11 +55,12 @@ MinecraftDiscordBot.js requires Node.js to be installed on your system, along wi
 
 ### Player count display
 The number of players on the server is displayed as the bot’s activity in the ‘Users‘ list on the right side.
+
 ![Discord Bot Activity shows player count](/images/discord_activity.png)
 
 ### Printing the list of server IPs in chat
 The IP details of servers can be displayed in Discord chat by typing `!ip` into Discord chat. The bot will reply to the user invoking the command.
-![Discord Bot replies with list of IPs to servers](/images/discord_reply)
+![Discord Bot replies with list of IPs to servers](/images/discord_reply.png)
 
 ## Configuration
 
