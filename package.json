@@ -9,5 +9,8 @@
 	"dependencies": {
 		"discord.js": "^11.5.1",
 		"minestat.js": "ldilley/minestat/Javascript"
+	},
+	"engines": {
+		"node": ">=8.0.0"
 	}
 }
