@@ -56,11 +56,10 @@ client.on('message', async msg => {
 });
 
 async function checkStatus() {
-    let statusStr = '';
-
     for (const [name, ip] of Object.entries(servIP)) {
         const serv = require('./minestat');
 
+        let statusStr = '';
         let online = 'nope'; // fallback
         const [host, port] = ip.split(':'); // Splitting into ip and port
 
