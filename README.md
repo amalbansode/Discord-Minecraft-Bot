@@ -60,6 +60,7 @@ The number of players on the server is displayed as the bot’s activity in the 
 
 ### Printing the list of server IPs in chat
 The IP details of servers can be displayed in Discord chat by typing `!ip` into Discord chat. The bot will reply to the user invoking the command.
+
 ![Discord Bot replies with list of IPs to servers](/images/discord_reply.png)
 
 ## Configuration
@@ -89,8 +90,15 @@ The standard port for Minecraft servers is typically _25565_.
 
 **Does the bot run forever?**
 
-No, the bot goes offline when you close Terminal or end the process on your system. You could host the bot on AWS or Heroku, following the same steps as above, instead. The bot can be kept online using the _forever_ module.
+No, the bot goes offline when you close Terminal or end the process on your system. You could host the bot on AWS or Heroku, following the same steps as above, instead. The bot can be kept online using the _forever_ module. Check out [this guide](https://shiffman.net/a2z/bot-ec2/) on the usage of AWS.
+
+## Contributors
+
+Contributions and improvements to the project are welcome! The following users helped by reviewing code and fixing my silly errors:
+
+* [Shreyas Minocha](https://github.com/shreyasminocha)
 
 ## License
 GNU GPL v3 or later
+
 © Amal Bansode, 2019
