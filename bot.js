@@ -18,29 +18,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// Use with Node.js
-// Requires discord.js, minestat.js (https://github.com/ldilley/minestat)
-
 const Discord = require('discord.js');
-const client = new Discord.Client();
 const auth = require('./auth.json');
+const serv = require('./minestat');
+
+const client = new Discord.Client();
 
 // Number of minutes to refresh server count after (recommended >= 1 min)
-const refreshEvery = 4;
-const refreshDelay = refreshEvery * 60000;
+const REFRESH_INTERVAL = 4 * 60 * 1000; // 4 minutes.
 
 // IP and port of Minecraft servers
 const servIP = {
     hypixel: 'mc.hypixel.net:25565',
-    // 'your title': 'your.ip:port',
 };
+
+let intervalId;
 
 // Executes as long as bot is online.
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
     console.log('Ready...');
     // Check status every 4 minutes
-    client.setInterval(checkStatus, refreshDelay);
+    intervalId = client.setInterval(checkStatus, REFRESH_INTERVAL);
 });
 
 
@@ -48,33 +47,55 @@ client.on('ready', () => {
 // States IPs of Minecraft servers respectively if '!ip' is typed into chat.
 client.on('message', async msg => {
     if (msg.content === '!ip') {
-        checkStatus();
-        for (const [name, ip] of Object.entries(servIP)) {
-            msg.reply(`${name}: ${ip}`);
+        
+        /**
+         * Possible race condition. 
+         * async/await evaluations are explicit through the 'AsyncFunction' and
+         * 'PausableFunction' constructs within the V8 runtime.
+         */
+
+        await checkStatus(); 
+
+        for (const name in servIP) {
+            msg.reply(`${name}: ${servIP[ip]}`);
         }
     }
 });
 
 async function checkStatus() {
-    let statusStr = '';
-    for (const [name, ip] of Object.entries(servIP)) {
-        const serv = require('./minestat');
 
-        let online = 'nope'; // fallback
+    // This logic is inherently flawed with what you had in mind.
+    // If I iterate over 10 name:ip blocks, I have an unhandled
+    // event emitter which needs to be closed to prevent memory
+    // leaks. 
+
+    for (const [name, ip] of Object.entries(servIP)) {
+        
+        // Dynamic runtime based memory leak. 
+        /**
+         * V8 has an optimizing compiler called TurboFan; it marks areas where
+         * the code is "hot" or heavily used. When you use a 'require' call, it
+         * can't optimize the block properly because of the inherent caching used
+         * in the call. 
+         *
+         * You are better off requiring the module at the start of the file
+         * and using it from thereon.
+         */
+
         const [host, port] = ip.split(':'); // Splitting into ip and port
 
         serv.init(host, parseInt(port), () => {
-            if (serv.online) {
-                online = serv.current_players;
-            } else {
-                online = 'nope';
-            }
-            // Appends player count of server being tested to status string.
-            statusStr = `${statusStr}${name}: ${online} | `;
+
+            // You can get more explicit here and do 
+            // Boolean(serv.online) or !!serv.online
+            // the latter of which is not considered good
+            // practice for readability.
+
             // Setting 'Activity' attribute of Discord bot with player counts of servers respectively.
-            client.user.setActivity(statusStr);
+            client.user.setActivity(`${statusStr}${name}: ${serv.online || 'nope'} | `);
         });
 
+        // Probable memory leak. You are not clearing the timeout.
         // Async function pause
         await new Promise(done => setTimeout(done, 2500));
     }
@@ -83,3 +104,6 @@ async function checkStatus() {
 // Set this in 'auth.json'
 // Token can be found on your Discord developer portal.
 client.login(auth.token);
+
+// You might want to add a .on('closing') equivalent to clear the interval
+// and the timeouts as well.
