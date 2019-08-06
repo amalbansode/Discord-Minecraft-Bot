@@ -1,5 +1,11 @@
 # Minecraft Discord Bot
 
+<!--
+You have a very interesting project at hand. A couple of things about writing a good README.md
+    1) Quote filenames in backticks ``
+    2) Do NOT use line-number specific configuration options. You can use a standard JSON file.
+-->
+
 ## Introduction
 MinecraftDiscordBot.js is a Node.js script for a Discord bot. Based on [MineStat](https://github.com/ldilley/minestat), the bot checks the status of user-specified Minecraft servers and returns the number of players online.
 
@@ -7,23 +13,23 @@ MinecraftDiscordBot.js is a Node.js script for a Discord bot. Based on [MineStat
 MinecraftDiscordBot.js requires Node.js to be installed on your system, along with primary dependencies discord.js and minestat.js.
 
 ### Setting up for use with Node.js
-1. Install Node.js and npm on your system.
-2. Clone this repository and place it in a folder.
+1. Install Node.js and npm on your system. (You can use [nvm](https://github.com/nvm-sh/nvm) or the [Node.js](https://nodejs.org/en/download/) binary.)
+2. Clone this repository and place it in a folder. (Use `git clone https://github.com/amalbansode/Minecraft-Discord-Bot`)
 2. In terminal, navigate to this folder.
 	```bash
-	$ cd location/of/your/folder
+	$ cd location/of/your/Minecraft-Discord-Bot
 	```
-3. Install the latest discord.js using npm.
+3. Install the latest `discord.js` using npm.
 	```bash
-	$ npm install --save discord.js
+	$ npm i -S discord.js # You can remove the -S because npm now automatically saves it to package.json
 	```
 
 ### Setting up a Discord Application
 1. [Create a Discord Application](https://discordapp.com/developers/applications/) for the purpose of this bot. Setup a Discord account if you do not have one yet.
 2. Give the application/bot a name and description.
 3. Navigate to the ‘Bot’ section. Reveal your bot’s token, and copy it.
-4. Open _auth.json_, which is contained in the same folder as _bot.js_.
-5. Paste your token within the double quotes corresponding to the "token" key, and save _auth.json_.
+4. Open `auth.json`, which is contained in the same folder as `bot.js`.
+5. Paste your token within the double quotes corresponding to the "token" key, and save `auth.json`.
 6. Now, with Terminal open in the same directory as before, run
 	```bash
 	$ node bot.js
@@ -66,12 +72,12 @@ The IP details of servers can be displayed in Discord chat by typing `!ip` into 
 ## Configuration
 
 ### Changing the servers to be checked
-1. Stop the bot if it is running. Open _bot.js_ in a text-editing program.
+1. Stop the bot if it is running. Open `bot.js` in a text-editing program.
 2. Navigate to line _33_, which contains the dictionary type variable `servIP`.
 3. By default, the dictionary contains the IP Address for the MInecraft Hypixel server.
 	```javascript
-	var servIP = {
-	    'hypixel': 'mc.hypixel.net:25565',
+	const servIP = {
+	    hypixel: 'mc.hypixel.net:25565',
 	    // 'your title': 'your.ip:port',
 	};
 	```
@@ -99,6 +105,10 @@ Contributions and improvements to the project are welcome! The following users h
 * [Shreyas Minocha](https://github.com/shreyasminocha)
 
 ## License
+<!--
+GPL v3 is not a very permissive license. You may be better off with 
+MIT or ISC license. Check it out! :)
+-->
 GNU GPL v3 or later
 
 © Amal Bansode, 2019

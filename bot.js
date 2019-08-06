@@ -18,29 +18,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// Use with Node.js
-// Requires discord.js, minestat.js (https://github.com/ldilley/minestat)
-
 const Discord = require('discord.js');
-const client = new Discord.Client();
 const auth = require('./auth.json');
+const serv = require('./minestat');
 
-// Number of minutes to refresh server count after (recommended >= 1 min)
-const refreshEvery = 4;
-const refreshDelay = refreshEvery * 60000;
+const client = new Discord.Client();
+
+// Number of minutes to refresh server count after (recommended >= 1 min; default = 4)
+const REFRESH_INTERVAL = 4 * 60 * 1000; // 4 minutes.
 
 // IP and port of Minecraft servers
 const servIP = {
     hypixel: 'mc.hypixel.net:25565',
-    // 'your title': 'your.ip:port',
 };
+
+let intervalId;
 
 // Executes as long as bot is online.
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
     console.log('Ready...');
+    checkStatus();
+
     // Check status every 4 minutes
-    client.setInterval(checkStatus, refreshDelay);
+    intervalId = client.setInterval(checkStatus, REFRESH_INTERVAL);
 });
 
 
@@ -48,35 +49,32 @@ client.on('ready', () => {
 // States IPs of Minecraft servers respectively if '!ip' is typed into chat.
 client.on('message', async msg => {
     if (msg.content === '!ip') {
-        checkStatus();
-        for (const [name, ip] of Object.entries(servIP)) {
-            msg.reply(`${name}: ${ip}`);
+        await checkStatus(); 
+        // Building string output for '!ip' command
+        for (const name in servIP) {
+            msg.reply(`${name}: ${servIP[name]}`);
         }
     }
 });
 
 async function checkStatus() {
     let statusStr = '';
-    for (const [name, ip] of Object.entries(servIP)) {
-        const serv = require('./minestat');
 
-        let online = 'nope'; // fallback
-        const [host, port] = ip.split(':'); // Splitting into ip and port
+    for (const name in servIP) {
 
+        const [host, port] = servIP[name].split(':'); // Splitting into ip and port
         serv.init(host, parseInt(port), () => {
             if (serv.online) {
-                online = serv.current_players;
-            } else {
-                online = 'nope';
+                // Setting 'Activity' attribute of Discord bot with player counts of servers respectively.
+                statusStr = (`${statusStr}${name}: ${serv.current_players} running ${serv.version} | `);
             }
-            // Appends player count of server being tested to status string.
-            statusStr = `${statusStr}${name}: ${online} | `;
-            // Setting 'Activity' attribute of Discord bot with player counts of servers respectively.
+            else {
+                statusStr = (`${statusStr}${name}: nope | `);
+            }
             client.user.setActivity(statusStr);
         });
 
-        // Async function pause
-        await new Promise(done => setTimeout(done, 2500));
+        await new Promise(done => setTimeout(done, 5000));
     }
 }
 
