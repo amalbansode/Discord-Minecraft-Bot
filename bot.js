@@ -29,7 +29,7 @@ const REFRESH_INTERVAL = 4 * 60 * 1000; // 4 minutes.
 
 // IP and port of Minecraft servers
 const servIP = {
-    'V': '68.194.58.66:25565'
+    hypixel: 'mc.hypixel.net:25565',
 };
 
 let intervalId;
