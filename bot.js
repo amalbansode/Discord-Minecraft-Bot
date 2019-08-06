@@ -24,12 +24,12 @@ const serv = require('./minestat');
 
 const client = new Discord.Client();
 
-// Number of minutes to refresh server count after (recommended >= 1 min)
+// Number of minutes to refresh server count after (recommended >= 1 min; default = 4)
 const REFRESH_INTERVAL = 4 * 60 * 1000; // 4 minutes.
 
 // IP and port of Minecraft servers
 const servIP = {
-    hypixel: 'mc.hypixel.net:25565',
+    'V': '68.194.58.66:25565'
 };
 
 let intervalId;
@@ -38,6 +38,8 @@ let intervalId;
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
     console.log('Ready...');
+    checkStatus();
+
     // Check status every 4 minutes
     intervalId = client.setInterval(checkStatus, REFRESH_INTERVAL);
 });
@@ -47,63 +49,35 @@ client.on('ready', () => {
 // States IPs of Minecraft servers respectively if '!ip' is typed into chat.
 client.on('message', async msg => {
     if (msg.content === '!ip') {
-        
-        /**
-         * Possible race condition. 
-         * async/await evaluations are explicit through the 'AsyncFunction' and
-         * 'PausableFunction' constructs within the V8 runtime.
-         */
-
         await checkStatus(); 
-
+        // Building string output for '!ip' command
         for (const name in servIP) {
-            msg.reply(`${name}: ${servIP[ip]}`);
+            msg.reply(`${name}: ${servIP[name]}`);
         }
     }
 });
 
 async function checkStatus() {
+    let statusStr = '';
 
-    // This logic is inherently flawed with what you had in mind.
-    // If I iterate over 10 name:ip blocks, I have an unhandled
-    // event emitter which needs to be closed to prevent memory
-    // leaks. 
+    for (const name in servIP) {
 
-    for (const [name, ip] of Object.entries(servIP)) {
-        
-        // Dynamic runtime based memory leak. 
-        /**
-         * V8 has an optimizing compiler called TurboFan; it marks areas where
-         * the code is "hot" or heavily used. When you use a 'require' call, it
-         * can't optimize the block properly because of the inherent caching used
-         * in the call. 
-         *
-         * You are better off requiring the module at the start of the file
-         * and using it from thereon.
-         */
-
-        const [host, port] = ip.split(':'); // Splitting into ip and port
-
+        const [host, port] = servIP[name].split(':'); // Splitting into ip and port
         serv.init(host, parseInt(port), () => {
-
-            // You can get more explicit here and do 
-            // Boolean(serv.online) or !!serv.online
-            // the latter of which is not considered good
-            // practice for readability.
-
-            // Setting 'Activity' attribute of Discord bot with player counts of servers respectively.
-            client.user.setActivity(`${statusStr}${name}: ${serv.online || 'nope'} | `);
+            if (serv.online) {
+                // Setting 'Activity' attribute of Discord bot with player counts of servers respectively.
+                statusStr = (`${statusStr}${name}: ${serv.current_players} running ${serv.version} | `);
+            }
+            else {
+                statusStr = (`${statusStr}${name}: nope | `);
+            }
+            client.user.setActivity(statusStr);
         });
 
-        // Probable memory leak. You are not clearing the timeout.
-        // Async function pause
-        await new Promise(done => setTimeout(done, 2500));
+        await new Promise(done => setTimeout(done, 5000));
     }
 }
 
 // Set this in 'auth.json'
 // Token can be found on your Discord developer portal.
 client.login(auth.token);
-
-// You might want to add a .on('closing') equivalent to clear the interval
-// and the timeouts as well.
