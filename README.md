@@ -1,16 +1,11 @@
-# Minecraft Discord Bot
+# Discord Minecraft Bot
 
-<!--
-You have a very interesting project at hand. A couple of things about writing a good README.md
-    1) Quote filenames in backticks ``
-    2) Do NOT use line-number specific configuration options. You can use a standard JSON file.
--->
 
 ## Introduction
-MinecraftDiscordBot.js is a Node.js script for a Discord bot. Based on [MineStat](https://github.com/ldilley/minestat), the bot checks the status of user-specified Minecraft servers and returns the number of players online.
+This is a Node.js script for a Discord bot. Based on [MineStat](https://github.com/ldilley/minestat), the bot checks the status of user-specified Minecraft servers and returns the number of players online.
 
 ## Installation
-MinecraftDiscordBot.js requires Node.js to be installed on your system, along with primary dependencies discord.js and minestat.js.
+This requires Node.js to be installed on your system, along with primary dependencies discord.js and minestat.js.
 
 ### Setting up for use with Node.js
 1. Install Node.js and npm on your system. (You can use [nvm](https://github.com/nvm-sh/nvm) or the [Node.js](https://nodejs.org/en/download/) binary.)
@@ -103,6 +98,7 @@ No, the bot goes offline when you close Terminal or end the process on your syst
 Contributions and improvements to the project are welcome! The following users helped by reviewing code and fixing my silly errors:
 
 * [Shreyas Minocha](https://github.com/shreyasminocha)
+* [Shreyansh Pandey](https://github.com/labsvisual)
 
 ## License
 <!--
